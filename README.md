@@ -1,6 +1,8 @@
-# PyTorch Neural Turing Machine (NTM)
+# PyTorch Neural Turing Machine (NTM) for IFT6135
 
 PyTorch implementation of [Neural Turing Machines](https://arxiv.org/abs/1410.5401) (NTM).
+
+See `questions.pdf` for assignment details.
 
 An **NTM** is a memory augumented neural network (attached to external memory) where the interactions with the external memory (address, read, write) are done using differentiable transformations. Overall, the network is end-to-end differentiable and thus trainable by a gradient based optimizer.
 
@@ -19,8 +21,6 @@ This repository implements a vanilla NTM in a straight forward way. The followin
 * Numerically stable
 * Flexible head configuration - use X read heads and Y write heads and specify the order of operation
 * **copy** and **repeat-copy** experiments agree with the paper
-
-***
 
 ## Copy Task
 
@@ -46,7 +46,6 @@ The following is the same, but with `sequence length = 80`. Note that the networ
 
 ![Copy Task](./images/copy-train-80-fast.gif)
 
-***
 ## Repeat Copy Task
 
 The **Repeat Copy** task tests whether the NTM can learn a simple nested function, and invoke it by learning to execute a __for loop__. The input to the network is a random sequence of bits, followed by a delimiter and a scalar value that represents the number of repetitions to output. The number of repetitions, was normalized to have zero mean and variance of one (as in the paper). Both the length of the sequence and the number of repetitions are randomised between 1 to 10.
