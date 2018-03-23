@@ -1,5 +1,6 @@
 *.json
 *.model
+*.pyc
 .cache/
 notebooks/.ipynb_checkpoints
 env
