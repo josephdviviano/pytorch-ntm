@@ -46,7 +46,7 @@ class LSTMController(nn.Module):
         outp, state = self.lstm(x, prev_state)
         return outp.squeeze(0), state
 
-class FFController(nn.Module):
+class MLPController(nn.Module):
     """
     An NTM controller based on MLP. Also see,
     https://github.com/DavideA/ntm-copy/blob/master/controller.py
