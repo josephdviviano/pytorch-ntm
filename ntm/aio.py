@@ -4,7 +4,7 @@ from torch import nn
 from torch.autograd import Variable
 
 from .ntm import NTM
-from .controller import LSTMController
+from .controller import LSTMController, MLPController
 from .head import NTMReadHead, NTMWriteHead
 from .memory import NTMMemory
 
@@ -12,7 +12,7 @@ from .memory import NTMMemory
 class EncapsulatedNTM(nn.Module):
 
     def __init__(self, num_inputs, num_outputs,
-                 controller_size, controller_layers, num_heads, N, M):
+                 controller_size, controller_layers, num_heads, N, M, controller_type='lstm'):
         """Initialize an EncapsulatedNTM.
 
         :param num_inputs: External number of inputs.
@@ -36,7 +36,15 @@ class EncapsulatedNTM(nn.Module):
 
         # Create the NTM components
         memory = NTMMemory(N, M)
-        controller = LSTMController(num_inputs + M*num_heads, controller_size, controller_layers)
+
+        # by default, uses an lstm as a controller, otherwise, uses a
+        # MLP as a controller
+        if controller_type == 'lstm':
+            controller = LSTMController(num_inputs + M*num_heads, controller_size, controller_layers)
+        else:
+            print('!!!USING MLP CONTROLLER!!!')
+            controller = MLPController(num_inputs + M*num_heads, controller_size, controller_layers)
+
         heads = nn.ModuleList([])
         for i in range(num_heads):
             heads += [

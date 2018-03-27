@@ -65,6 +65,7 @@ class CopyTaskParams(object):
     rmsprop_lr = attrib(default=1e-4, convert=float)
     rmsprop_momentum = attrib(default=0.9, convert=float)
     rmsprop_alpha = attrib(default=0.95, convert=float)
+    controller_type = attrib(default='lstm', convert=str)
 
 
 #
@@ -97,7 +98,8 @@ class CopyTaskModelTraining(object):
         net = EncapsulatedNTM(self.params.sequence_width + 1, self.params.sequence_width,
                               self.params.controller_size, self.params.controller_layers,
                               self.params.num_heads,
-                              self.params.memory_n, self.params.memory_m)
+                              self.params.memory_n, self.params.memory_m,
+                              self.params.controller_type)
         return net
 
     @dataloader.default

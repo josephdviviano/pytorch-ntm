@@ -1,0 +1,44 @@
+%&pdflatex
+%% filename: amsart-template.tex, version: 2.1
+\documentclass{amsart}
+\usepackage{hyperref}
+\usepackage{inputenc}
+\usepackage{graphicx}
+\usepackage{bbm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{xca}[theorem]{Exercise}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\numberwithin{equation}{section}
+\setlength{\parindent}{0pt} % turn off auto-indent
+
+\graphicspath{ {./} }
+
+\begin{document}
+
+\title{Assignment 3: Neural Turing Machines [IFT6135]}
+
+\author{Joseph D. Viviano, Marzi Mehdizad, Johnathan Guymont}
+\address{Universit\'e de Montr\'eal}
+\curraddr{}
+\email{joseph@viviano.ca, jonathan@guymont.com, marzieh.mehdizadeh@gmail.com}
+\thanks{}
+\date{March 2018}
+
+\maketitle
+
+\section{Implementing the Neural Turing Machine}
+
+\subsection{Parameters}
+\subsection{Hyperparameters Chosen}
+\subsection{Generalization to Longer Sequences}
+\subsection{Visualization of Read/Write Heads (Attention)}
+\subsection{Understanding the Shift Operator}
+
+\end{document}
+

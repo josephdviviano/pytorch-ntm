@@ -16,18 +16,19 @@ import torch
 from torch.autograd import Variable
 import numpy as np
 
-
 LOGGER = logging.getLogger(__name__)
 
-
 from tasks.copytask import CopyTaskModelTraining, CopyTaskParams
-from tasks.repeatcopytask import RepeatCopyTaskModelTraining, RepeatCopyTaskParams
 
 TASKS = {
     'copy': (CopyTaskModelTraining, CopyTaskParams),
-    'repeat-copy': (RepeatCopyTaskModelTraining, RepeatCopyTaskParams)
 }
 
+#from tasks.repeatcopytask import RepeatCopyTaskModelTraining, RepeatCopyTaskParams
+#TASKS = {
+#    'copy': (CopyTaskModelTraining, CopyTaskParams),
+#    'repeat-copy': (RepeatCopyTaskModelTraining, RepeatCopyTaskParams)
+#}
 
 # Default values for program arguments
 RANDOM_SEED = 1000
@@ -211,7 +212,7 @@ def init_arguments():
                         help="Checkpoint interval (default: {}). "
                              "Use 0 to disable checkpointing".format(CHECKPOINT_INTERVAL))
     parser.add_argument('--checkpoint-path', action='store', default='./',
-                        help="Path for saving checkpoint data (default: './')")
+                        help="Path for saving checkpoint data (default: './output')")
     parser.add_argument('--report-interval', type=int, default=REPORT_INTERVAL,
                         help="Reporting interval")
 
@@ -219,6 +220,7 @@ def init_arguments():
 
     args = parser.parse_args()
     args.checkpoint_path = args.checkpoint_path.rstrip('/')
+
 
     return args
 
@@ -246,15 +248,6 @@ def update_model_params(params, update):
     return params
 
 def init_model(args):
-    LOGGER.info("Training for the **%s** task", args.task)
-
-    model_cls, params_cls = TASKS[args.task]
-    params = params_cls()
-    params = update_model_params(params, args.param)
-
-    LOGGER.info(params)
-
-    model = model_cls(params=params)
     return model
 
 
@@ -263,7 +256,7 @@ def init_logging():
                         level=logging.DEBUG)
 
 
-def main():
+def q2c():
     init_logging()
 
     # Initialize arguments
@@ -273,12 +266,25 @@ def main():
     init_seed(args.seed)
 
     # Initialize the model
-    model = init_model(args)
+    LOGGER.info("Training for the **%s** task", args.task)
+
+    #important parameters - memory_m, sequence_max_length = {range(10,100,10)}
+    model_cls, params_cls = TASKS['copy']
+
+    #for N in range(10,100,10):
+    N = 100
+    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
+    params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    LOGGER.info(params)
+    model = model_cls(params=params)
 
     LOGGER.info("Total number of parameters: %d", model.net.calculate_num_params())
     train_model(model, args)
 
 
 if __name__ == '__main__':
-    main()
+    q2c()
+    q2d()
+    q2e()
+
 

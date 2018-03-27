@@ -50,6 +50,11 @@ class NTM(nn.Module):
         self.reset_parameters()
 
     def create_new_state(self, batch_size):
+        """
+        init_r -- read heads are copied across new states (i.e., retain memory)
+        controller_state -- controller state is reset?
+        heads_state -- heads are reset
+        """
         init_r = [r.clone().repeat(batch_size, 1) for r in self.init_r]
         controller_state = self.controller.create_new_state(batch_size)
         heads_state = [head.create_new_state(batch_size) for head in self.heads]
