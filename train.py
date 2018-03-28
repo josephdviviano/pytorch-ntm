@@ -269,14 +269,14 @@ def q2c():
     LOGGER.info("Training for the **%s** task", args.task)
 
     #important parameters - memory_m, sequence_max_length = {range(10,100,10)}
-    #model_cls, params_cls = TASKS['copy_baseline']
-    model_cls, params_cls = TASKS['copy']
+    model_cls, params_cls = TASKS['copy_baseline']
+    #model_cls, params_cls = TASKS['copy']
 
     #for N in range(10,100,10):
     N = 20
     #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
-    params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
-    #params = params_cls(sequence_max_len=N)
+    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    params = params_cls(sequence_max_len=N)
     LOGGER.info(params)
     model = model_cls(params=params)
 
