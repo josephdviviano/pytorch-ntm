@@ -32,8 +32,8 @@ TASKS = {
 
 # Default values for program arguments
 RANDOM_SEED = 1000
-REPORT_INTERVAL = 5000
-CHECKPOINT_INTERVAL = 50000
+REPORT_INTERVAL = 4000
+CHECKPOINT_INTERVAL = 40000
 
 
 def get_ms():
@@ -273,9 +273,9 @@ def q2c():
     model_cls, params_cls = TASKS['copy']
 
     #for N in range(10,100,10):
-    N = 10
-    params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
-    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    N = 20
+    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
+    params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
     #params = params_cls(sequence_max_len=N)
     LOGGER.info(params)
     model = model_cls(params=params)
