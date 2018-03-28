@@ -9,7 +9,6 @@ import time
 import random
 import re
 import sys
-
 import attr
 import argcomplete
 import torch
@@ -18,10 +17,11 @@ import numpy as np
 
 LOGGER = logging.getLogger(__name__)
 
-from tasks.copytask import CopyTaskModelTraining, CopyTaskParams
+from tasks.copytask import CopyTaskModelTraining, CopyTaskParams, CopyTaskBaselineModelTraining, CopyTaskBaselineParams
 
 TASKS = {
     'copy': (CopyTaskModelTraining, CopyTaskParams),
+    'copy_baseline' : (CopyTaskBaselineModelTraining, CopyTaskBaselineParams)
 }
 
 #from tasks.repeatcopytask import RepeatCopyTaskModelTraining, RepeatCopyTaskParams
@@ -68,7 +68,7 @@ def progress_bar(batch_num, report_interval, last_loss):
 def save_checkpoint(net, name, args, batch_num, losses, costs, seq_lengths):
     progress_clean()
 
-    basename = "{}/{}-{}-batch-{}".format(args.checkpoint_path, name, args.seed, batch_num)
+    basename = "outputs/{}-{}-batch-{}".format(name, args.seed, batch_num)
     model_fname = basename + ".model"
     LOGGER.info("Saving model checkpoint to: '%s'", model_fname)
     torch.save(net.state_dict(), model_fname)
@@ -269,12 +269,14 @@ def q2c():
     LOGGER.info("Training for the **%s** task", args.task)
 
     #important parameters - memory_m, sequence_max_length = {range(10,100,10)}
-    model_cls, params_cls = TASKS['copy']
+    model_cls, params_cls = TASKS['copy_baseline']
+    #model_cls, params_cls = TASKS['copy']
 
     #for N in range(10,100,10):
-    N = 100
+    N = 10
     #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
-    params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    params = params_cls(sequence_max_len=N)
     LOGGER.info(params)
     model = model_cls(params=params)
 
@@ -284,7 +286,7 @@ def q2c():
 
 if __name__ == '__main__':
     q2c()
-    q2d()
-    q2e()
+    #q2d()
+    #q2e()
 
 

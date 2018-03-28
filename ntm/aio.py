@@ -63,6 +63,7 @@ class EncapsulatedNTM(nn.Module):
 
     def forward(self, x=None):
         if x is None:
+            print('NO X SUPPLIED')
             x = Variable(torch.zeros(self.batch_size, self.num_inputs))
 
         o, self.previous_state = self.ntm(x, self.previous_state)

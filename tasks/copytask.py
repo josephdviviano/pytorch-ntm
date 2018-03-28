@@ -9,6 +9,7 @@ from torch import optim
 import numpy as np
 
 from ntm.aio import EncapsulatedNTM
+from ntm.lstm import LSTM
 
 
 # Generator of randomized test sequences
@@ -60,7 +61,7 @@ class CopyTaskParams(object):
     sequence_max_len = attrib(default=20, convert=int)
     memory_n = attrib(default=128, convert=int)
     memory_m = attrib(default=20, convert=int)
-    num_batches = attrib(default=50000, convert=int)
+    num_batches = attrib(default=20000, convert=int)
     batch_size = attrib(default=1, convert=int)
     rmsprop_lr = attrib(default=1e-4, convert=float)
     rmsprop_momentum = attrib(default=0.9, convert=float)
@@ -100,6 +101,58 @@ class CopyTaskModelTraining(object):
                               self.params.num_heads,
                               self.params.memory_n, self.params.memory_m,
                               self.params.controller_type)
+        return net
+
+    @dataloader.default
+    def default_dataloader(self):
+        return dataloader(self.params.num_batches, self.params.batch_size,
+                          self.params.sequence_width,
+                          self.params.sequence_min_len, self.params.sequence_max_len)
+
+    @criterion.default
+    def default_criterion(self):
+        return nn.BCELoss()
+
+    @optimizer.default
+    def default_optimizer(self):
+        return optim.RMSprop(self.net.parameters(),
+                             momentum=self.params.rmsprop_momentum,
+                             alpha=self.params.rmsprop_alpha,
+                             lr=self.params.rmsprop_lr)
+
+
+@attrs
+class CopyTaskBaselineParams(object):
+    name = attrib(default="copy-task")
+    controller_size = attrib(default=100, convert=int)
+    controller_layers = attrib(default=1,convert=int)
+    num_heads = attrib(default=1, convert=int)
+    sequence_width = attrib(default=8, convert=int)
+    sequence_min_len = attrib(default=1,convert=int)
+    sequence_max_len = attrib(default=20, convert=int)
+    num_batches = attrib(default=20000, convert=int)
+    batch_size = attrib(default=1, convert=int)
+    rmsprop_lr = attrib(default=1e-4, convert=float)
+    rmsprop_momentum = attrib(default=0.9, convert=float)
+    rmsprop_alpha = attrib(default=0.95, convert=float)
+    controller_type = attrib(default='lstm', convert=str)
+
+
+@attrs
+class CopyTaskBaselineModelTraining(object):
+    params = attrib(default=Factory(CopyTaskParams))
+    net = attrib()
+    dataloader = attrib()
+    criterion = attrib()
+    optimizer = attrib()
+
+    @net.default
+    def default_net(self):
+        # We have 1 additional input for the delimiter which is passed on a
+        # separate "control" channel
+        net = LSTM(self.params.sequence_width + 1, self.params.sequence_width,
+                   self.params.controller_size, self.params.controller_layers)
+
         return net
 
     @dataloader.default
