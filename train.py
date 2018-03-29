@@ -319,8 +319,8 @@ def main(name):
 
 
 if __name__ == '__main__':
-    main('lstm-ntm')
-    #main('mlp-ntm')
+    #main('lstm-ntm')
+    main('mlp-ntm')
     #main('lstm')
 
 
