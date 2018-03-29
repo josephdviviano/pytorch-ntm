@@ -284,6 +284,8 @@ def eval_loop(model, name):
     plt.savefig('outputs/{}_loss-eval.svg'.format(name))
     plt.close()
 
+    import IPython; IPython.embed()
+
 
 def main(name):
     init_logging()
@@ -319,8 +321,8 @@ def main(name):
 
 
 if __name__ == '__main__':
-    #main('lstm-ntm')
-    main('mlp-ntm')
+    main('lstm-ntm')
+    #main('mlp-ntm')
     #main('lstm')
 
 
