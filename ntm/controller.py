@@ -59,8 +59,9 @@ class MLPController(nn.Module):
         self.num_outputs = num_outputs
         self.num_layers = 1 # TODO: num_layers hard coded to 1 for now
 
-        self.mlp = nn.Sequential(
-            nn.Linear(num_inputs, num_outputs), nn.Sigmoid())
+        #self.mlp = nn.Sequential(
+        #    nn.Linear(num_inputs, num_outputs), nn.Sigmoid())
+        self.mlp = nn.Linear(num_inputs, num_outputs)
 
         self.reset_parameters()
 
