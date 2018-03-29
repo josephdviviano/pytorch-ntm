@@ -104,15 +104,15 @@ def evaluate(name):
     import IPython; IPython.embed()
 
 
-#plot_history('mlp-ntm')
+plot_history('mlp-ntm')
 #plot_history('lstm-ntm')
 #plot_history('lstm')
 
-#plot_seqlen('mlp-ntm')
+plot_seqlen('mlp-ntm')
 #plot_seqlen('lstm-ntm')
 #plot_seqlen('lstm')
 
 #evaluate('mlp-ntm')
 #evaluate('lstm-ntm')
-evaluate('lstm')
+#evaluate('lstm')
 

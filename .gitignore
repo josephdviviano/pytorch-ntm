@@ -1,4 +1,7 @@
 *.pyc
+*.out
+*.log
+*.aux
 .cache/
 notebooks/.ipynb_checkpoints
 env
