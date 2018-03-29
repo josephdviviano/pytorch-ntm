@@ -111,6 +111,7 @@ class CopyTaskModelTraining(object):
 
     @criterion.default
     def default_criterion(self):
+        #return nn.CrossEntropyLoss()
         return nn.BCELoss()
 
     @optimizer.default
@@ -164,6 +165,7 @@ class CopyTaskBaselineModelTraining(object):
     @criterion.default
     def default_criterion(self):
         return nn.BCELoss()
+        #return nn.CrossEntropyLoss()
 
     @optimizer.default
     def default_optimizer(self):

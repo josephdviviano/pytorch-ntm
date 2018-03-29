@@ -113,6 +113,6 @@ def evaluate(name):
 #plot_seqlen('lstm')
 
 #evaluate('mlp-ntm')
-evaluate('lstm-ntm')
-#evaluate('lstm', baseline=True)
+#evaluate('lstm-ntm')
+evaluate('lstm')
 

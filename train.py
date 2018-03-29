@@ -18,6 +18,12 @@ import numpy as np
 LOGGER = logging.getLogger(__name__)
 
 from tasks.copytask import CopyTaskModelTraining, CopyTaskParams, CopyTaskBaselineModelTraining, CopyTaskBaselineParams
+from tasks.copytask import dataloader
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 TASKS = {
     'copy': (CopyTaskModelTraining, CopyTaskParams),
@@ -211,8 +217,8 @@ def init_arguments():
     parser.add_argument('--checkpoint-interval', type=int, default=CHECKPOINT_INTERVAL,
                         help="Checkpoint interval (default: {}). "
                              "Use 0 to disable checkpointing".format(CHECKPOINT_INTERVAL))
-    parser.add_argument('--checkpoint-path', action='store', default='./',
-                        help="Path for saving checkpoint data (default: './output')")
+    parser.add_argument('--checkpoint-path', action='store', default='./outputs',
+                        help="Path for saving checkpoint data (default: './outputs')")
     parser.add_argument('--report-interval', type=int, default=REPORT_INTERVAL,
                         help="Reporting interval")
 
@@ -256,7 +262,30 @@ def init_logging():
                         level=logging.DEBUG)
 
 
-def q2c():
+def eval_loop(model, name):
+
+    losses = np.zeros((10, 20))
+    seq_lens = range(10, 110, 10)
+    for i, seq_len in enumerate(seq_lens):
+        for j in range(20):
+            _, x, y = next(iter(dataloader(1, 1, 8, seq_len, seq_len)))
+            result = evaluate(model.net, model.criterion, x, y)
+            losses[i, j] = result['loss']
+
+    plt.errorbar(range(10), losses.mean(1), losses.std(1), fmt='o-',
+        elinewidth=2, linewidth=2, label='Loss')
+
+    plt.grid()
+    plt.xticks(range(10), seq_lens)
+    plt.ylabel('Loss per sequence (cross entropy)')
+    plt.xlabel('Test sequence length')
+    plt.title('Mean loss per sequence length for {}'.format(name), fontsize=16)
+    plt.savefig('outputs/{}_loss-eval.jpg'.format(name))
+    plt.savefig('outputs/{}_loss-eval.svg'.format(name))
+    plt.close()
+
+
+def main(name):
     init_logging()
 
     # Initialize arguments
@@ -268,25 +297,30 @@ def q2c():
     # Initialize the model
     LOGGER.info("Training for the **%s** task", args.task)
 
-    #important parameters - memory_m, sequence_max_length = {range(10,100,10)}
-    model_cls, params_cls = TASKS['copy_baseline']
-    #model_cls, params_cls = TASKS['copy']
-
-    #for N in range(10,100,10):
     N = 20
-    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
-    #params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
-    params = params_cls(sequence_max_len=N)
+
+    if name == 'lstm':
+        model_cls, params_cls = TASKS['copy_baseline']
+        params = params_cls(sequence_max_len=N)
+    elif name == 'lstm-ntm':
+        model_cls, params_cls = TASKS['copy']
+        params = params_cls(memory_m=N, sequence_max_len=N, controller_type='lstm')
+    elif name == 'mlp-ntm':
+        model_cls, params_cls = TASKS['copy']
+        params = params_cls(memory_m=N, sequence_max_len=N, controller_type='MLP')
+
     LOGGER.info(params)
     model = model_cls(params=params)
 
     LOGGER.info("Total number of parameters: %d", model.net.calculate_num_params())
     train_model(model, args)
 
+    eval_loop(model, name)
+
 
 if __name__ == '__main__':
-    q2c()
-    #q2d()
-    #q2e()
+    main('lstm-ntm')
+    #main('mlp-ntm')
+    #main('lstm')
 
 
